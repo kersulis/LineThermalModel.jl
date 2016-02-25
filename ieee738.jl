@@ -1,5 +1,6 @@
 """
 In:
+
 * `D_0`  [m],           Conductor diameter
 * `p_f`  [kg/m^3],      Air density
 * `V_w`  [m/s],         Wind speed
@@ -13,6 +14,7 @@ end
 
 """
 In:
+
 * `K_angle` [deg],      Wind direction factor
 * `N_Re` [-],           Reynolds number
 * `k_f` [W/m-C],        Thermal conductivity of air
@@ -27,6 +29,7 @@ end
 
 """
 In:
+
 * `K_angle` [deg],      Wind direction factor
 * `N_Re` [-],           Reynolds number
 * `k_f` [W/m-C],        Thermal conductivity of air
@@ -40,18 +43,6 @@ function eq3b_q_c2(K_angle, N_Re, k_f, T_s, T_a)
 end
 
 """
-In:
-* `k_f` [W/m-C],        Thermal conductivity of air
-* `K_angle` [deg],      Wind direction factor
-* `N_Re` [-],           Reynolds number
-
-Out: `eta_c` [W/m-C], Conductive heat rate coefficient
-"""
-function eta_c(k_f, K_angle, N_Re)
-    K_angle*k_f*max(1.01 + 1.35*N_Re^0.52, 0.754*N_Re^0.6)
-end
-
-"""
 In: `phi` [deg], Angle between wind and conductor axis
 
 Out: K_angle [-], Wind direction factor
@@ -62,6 +53,7 @@ end
 
 """
 In:
+
 * `T_s` [C],            Conductor surface temperature 
 * `T_a` [C],            Ambient temperature
 
@@ -71,7 +63,7 @@ function eq6_T_film(T_s, T_a)
     (T_s + T_a)/2
 end
 
-""""
+"""
 In: `T_film` [C], Film temperature
 
 Out: `mu_f` [kg/m-s], Dynamic viscosity of air
@@ -80,8 +72,9 @@ function eq13a_mu_f(T_film)
     (1.458e-6*(T_film + 273)^1.5)/(T_film + 383.4)
 end
 
-""""
+"""
 In:
+
 * `H_e` [m],            Conductor elevation
 * `T_film` [C],         Film temperature
 
@@ -111,6 +104,7 @@ end
 
 """
 In:
+
 * `lat` [deg],          Latitude
 * `delta` [deg],        Solar declination
 * `omega` [deg],        Hour angle
@@ -132,6 +126,7 @@ end
 
 """
 In:
+
 * `C` [deg],            Solar azimuth constant
 * `chi` [deg],          Solar azimuth variable
 
@@ -143,6 +138,7 @@ end
 
 """
 In:
+
 * `omega` [deg],        Hour angle
 * `lat` [deg],          Latitude
 * `delta` [deg],        Solar declination
@@ -155,6 +151,7 @@ end
 
 """
 In:
+
 * `omega` [deg],        Hour angle
 * `chi` [deg],          Solar azimuth variable
 
@@ -181,6 +178,7 @@ end
 
 """
 In:
+
 * `K_solar` [-],        Solar altitude correction factor
 * `Q_s` [W/m^2],        Heat flux density
 
@@ -197,5 +195,18 @@ Out: `K_solar` [-], Solar altitude correction factor
 """
 function eq20_K_solar(H_e)
     @evalpoly(H_e,1.0,1.148e-4,-1.108e-8)
+end
+
+"""
+In:
+
+* `k_f` [W/m-C],        Thermal conductivity of air
+* `K_angle` [deg],      Wind direction factor
+* `N_Re` [-],           Reynolds number
+
+Out: `eta_c` [W/m-C], Conductive heat rate coefficient
+"""
+function eta_c(k_f, K_angle, N_Re)
+    K_angle*k_f*max(1.01 + 1.35*N_Re^0.52, 0.754*N_Re^0.6)
 end
 
