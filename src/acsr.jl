@@ -1,5 +1,6 @@
 """
 In:
+
 * `Al_m` [kg/m],        Aluminum mass
 * `St_m` [kg/m],        Steel mass
 
@@ -15,6 +16,7 @@ end
 In: nothing
 
 Out:
+
 * ACSR table with the following values for each conductor type:
     * `D` [in],             Conductor diameter
     * `Al_m` [lb/1000ft],   Aluminum weight
@@ -90,6 +92,7 @@ end
 In: nothing
 
 Out:
+
 * ACSR table with the following values for each conductor type:
     * `D` [m],             Conductor diameter
     * `Al_m` [kg/m],   Aluminum weight
@@ -120,10 +123,12 @@ end
 
 """
 In:
+
 * `I_lim` [A],          Line current limit
 * `V_base` [V],         Line base voltage
 
 Out:
+
 * `D` [m],              Conductor diameter
 * `Al_m` [kg/m],        Aluminum weight
 * `St_m` [kg/m],        Steel weight
@@ -148,7 +153,7 @@ function acsr_interpolation(I_lim, V_base)
         bundle = I_lim <= 1000 ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
     elseif V_base <= 345e3
         bundle = I_lim <= maxcurrent ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
-    elseif V_base <= 500
+    elseif V_base <= 500e3
         bundle = I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
     else
         bundle = I_lim <= maxcurrent*3 ? 3 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
