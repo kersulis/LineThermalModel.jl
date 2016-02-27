@@ -1,15 +1,15 @@
 """
 In:
 
-* `D_0`  [m],           Conductor diameter
+* `D`  [m],           Conductor diameter
 * `p_f`  [kg/m^3],      Air density
 * `V_w`  [m/s],         Wind speed
 * `mu_f` [kg/m-s],      Dynamic viscosity of air
 
 Out: `N_Re` [-], Reynolds number
 """
-function eq2c_N_Re(D_0, p_f, V_w, mu_f)
-    (D0*p_f*V_w)/mu_f
+function eq2c_N_Re(D, p_f, V_w, mu_f)
+    (D*p_f*V_w)/mu_f
 end
 
 """
@@ -64,6 +64,33 @@ function eq6_T_film(T_s, T_a)
 end
 
 """
+In:
+
+* `alpha` [-],          Solar absorptivity
+* `Q_se` [W/m^2],       Elevation-corrected heat flux density
+* `theta` [deg],        Sun ray incidence angle
+* `A_prime` [m^2],      Conductor area
+
+Out: `q_s`/`eta_s` [W/m], Solar heat gain rate/coefficient
+"""
+function eq8_q_s(alpha, Q_se, theta, A_prime)
+    alpha*Q_se*sind(theta)*A_prime
+end
+
+"""
+In:
+
+* `H_c` [deg], Solar altitude
+* `Z_c` [deg], Solar azimuth
+* `Z_l` [deg], Line azimuth; East-West => pi/2, North-South => 0
+
+Out: `theta` [deg], Sun ray incidence angle
+"""
+function eq9_theta(H_c, Z_c, Z_l)
+    acosd(cosd(H_c)*cosd(Z_c - Z_l))
+end
+
+"""
 In: `T_film` [C], Film temperature
 
 Out: `mu_f` [kg/m-s], Dynamic viscosity of air
@@ -98,7 +125,7 @@ In: `hours_from_noon`
 
 Out: `omega` [deg], Hour angle
 """
-function omega(hours_from_noon)
+function eq_omega(hours_from_noon)
     hours_from_noon*15.0
 end
 
@@ -133,7 +160,7 @@ In:
 Out: `Z_c` [deg], Solar azimuth
 """
 function eq17a_Z_c(C, chi)
-    C + arctand(chi)
+    C + atand(chi)
 end
 
 """
@@ -206,7 +233,18 @@ In:
 
 Out: `eta_c` [W/m-C], Conductive heat rate coefficient
 """
-function eta_c(k_f, K_angle, N_Re)
+function eq_eta_c(k_f, K_angle, N_Re)
     K_angle*k_f*max(1.01 + 1.35*N_Re^0.52, 0.754*N_Re^0.6)
 end
 
+"""
+In:
+
+* `D` [m],      Conductor diameter
+* `emm` [-],    Emissivity
+
+Out: `eta_r` [W/m-C^4], Radiative heat loss rate coefficient
+"""
+function eq_eta_r(D, emm)
+    17.8*D*emm
+end

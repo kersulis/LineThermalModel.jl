@@ -2,12 +2,12 @@ module LineThermalModel
 export
     # ieee 738 functions
     eq2c_N_Re, eq3a_q_c1, eq3b_q_c2, eq4a_K_angle,
-    eq6_T_film, eq13a_mu_f, eq14a_p_f, eq15a_k_f, omega,
+    eq6_T_film, eq8_q_s, eq9_theta, eq13a_mu_f, eq14a_p_f, eq15a_k_f, eq_omega,
     eq16a_H_c, eq16b_delta, eq17a_Z_c, eq17b_chi, table2_C,
-    eq18_Q_s, eq19_Q_se, eq20_K_solar, eta_c,
+    eq18_Q_s, eq19_Q_se, eq20_K_solar, eq_eta_c, eq_eta_r,
 
     # acsr lookup/interpolation functions
-    eq_mCp, ACSR_table_english, ACSR_table_si, ACSR_interpolation
+    eq_mCp, acsr_table_english, acsr_table_si, acsr_interpolation
 
 include("ieee738.jl")
 include("acsr.jl")

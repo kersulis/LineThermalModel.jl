@@ -140,17 +140,18 @@ function acsr_interpolation(I_lim, V_base)
     # See:
     #   Bergen and Vittal "Power Systems Analysis" 2nd ed 2000 p.85
     #   Weedy and Cory "Electric Power Systems" 4th ed 1998 p.129
-    largeBundle = 1000
-    if V_base <= 138
-        bundle = I_lim <= 1000 ? 1 : I_lim <= maxCurrent*2 ? 2 : largeBundle
-    elseif V_base <= 220
-        bundle = I_lim <= 1000 ? 1 : I_lim <= maxCurrent*2 ? 2 : I_lim <= maxCurrent*3 ? 3 : largeBundle
-    elseif V_base <= 345
-        bundle = I_lim <= maxCurrent ? 1 : I_lim <= maxCurrent*2 ? 2 : I_lim <= maxCurrent*3 ? 3 : largeBundle
+    maxcurrent = maximum(acsr[:,5])
+    largebundle = 1000
+    if V_base <= 138e3
+        bundle = I_lim <= 1000 ? 1 : I_lim <= maxcurrent*2 ? 2 : largebundle
+    elseif V_base <= 220e3
+        bundle = I_lim <= 1000 ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
+    elseif V_base <= 345e3
+        bundle = I_lim <= maxcurrent ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
     elseif V_base <= 500
-        bundle = I_lim <= maxCurrent*2 ? 2 : I_lim <= maxCurrent*4 ? 4 : I_lim <= maxCurrent*6 ? 6 : largeBundle
+        bundle = I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
     else
-        bundle = I_lim <= maxCurrent*3 ? 3 : I_lim <= maxCurrent*4 ? 4 : I_lim <= maxCurrent*6 ? 6 : largeBundle
+        bundle = I_lim <= maxcurrent*3 ? 3 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
     end
 
     # Search for ACSR match
