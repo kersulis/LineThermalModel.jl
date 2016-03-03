@@ -122,6 +122,8 @@ function acsr_table_si()
 end
 
 """
+Guess bundling configuration based on I_lim and V_base.
+
 In:
 
 * `I_lim` [A],          Line current limit
@@ -136,15 +138,13 @@ Out:
 * `bundle` [-],         Number of conductors per phase
 * `label` [string],     Label for each conductor type
 
-Credit to Mads Almassalkhi for original MATLAB implementation.
+Credit to Mads Almassalkhi for original MATLAB implementation. See:
+
+*  Bergen and Vittal "Power Systems Analysis" 2nd ed 2000 p.85
+*  Weedy and Cory "Electric Power Systems" 4th ed 1998 p.129
 """
 function acsr_interpolation(I_lim, V_base)
     acsr, labels = acsr_table_si()
-    # Guess bundling configuration based on I_lim and V_base.
-    # `bundle` represents the number of conductors per phase.
-    # See:
-    #   Bergen and Vittal "Power Systems Analysis" 2nd ed 2000 p.85
-    #   Weedy and Cory "Electric Power Systems" 4th ed 1998 p.129
     maxcurrent = maximum(acsr[:,5])
     largebundle = 1000
     if V_base <= 138e3
