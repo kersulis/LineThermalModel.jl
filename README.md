@@ -1,6 +1,13 @@
 # LineThermalModel.jl
 Thermal modeling for transmission lines. Written in Julia. Compliant with IEEE Standard 738-2012.
 
+## Installation
+Install like any other unregistered Julia package:
+
+```julia
+Pkg.clone("https://github.com/kersulis/LineThermalModel.jl")
+```
+
 ## IEEE 738 functions
 The following functions are exported. Use `help()` on any of them to see input and output descriptions.
 
@@ -9,6 +16,8 @@ The following functions are exported. Use `help()` on any of them to see input a
 * `eq3b_q_c2`
 * `eq4a_K_angle`
 * `eq6_T_film`
+* `eq8_q_s`
+* `eq9_theta`
 * `eq13a_mu_f`
 * `eq14a_p_f`
 * `eq15a_k_f`
@@ -22,10 +31,11 @@ The following functions are exported. Use `help()` on any of them to see input a
 * `eq19_Q_se`
 * `eq20_K_solar`
 * `eq_eta_c`
+* `eq_eta_r`
 
 The equations are named according to their numbers in [IEEE Standard 738][1]. After the equation number there is an underscore, followed by the name of the parameter the function returns.
 
-## ACSR interpolation
+## ACSR interpolation functions
 Due to work by [Mads Almassalkhi][2], this package contains functionality for working with ACSR data. Return a table of ACSR data in English or SI units as follows:
 
 ```julia
@@ -39,7 +49,12 @@ More importantly, there is a simple lookup algorithm for guessing an ACSR conduc
 D, Al_m, St_m, R = acsr_interpolation(I_lim, V_base)
 ```
 
-Suppose one has the current limit and base voltage for a particular line. To compute `eta_c` and `eta_r` (the coefficients of conductive and radiative heat loss, respectively), one can do the following:
+## Line length estimation
+The length of a line may be estimated as follows:
+
+```julia
+length = estimate_length(S_base, V_base, R_pu, R_cond, bundle)
+```
 
 [1]: http://dx.doi.org/10.1109/IEEESTD.2013.6692858 
 [2]: http://www.uvm.edu/~cems/?Page=employee/profile.php&SM=employee/_employeemenu.html&EmID=1108
