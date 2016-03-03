@@ -184,7 +184,7 @@ In:
 
 Out: `C` [deg], Solar azimuth constant
 """
-function table2_C(omega, chi)
+function eqtable2_C(omega, chi)
     if -180 <= omega < 0
         C = chi >= 0 ? 0.0 : 180.0
     elseif 0 <= omega < 180
