@@ -17,13 +17,15 @@ In: nothing
 
 Out:
 
-* ACSR table with the following values for each conductor type:
-    * `D` [in],             Conductor diameter
-    * `Al_m` [lb/1000ft],   Aluminum weight
-    * `St_m` [lb/1000ft],   Steel weight
-    * `R` [ohm/1000ft],     Resistance assuming AC current and 75 C temperature
-    * `bundle` [-],         Number of conductors per phase
-* `labels` [string], Label for each conductor type
+**ACSR table** with the following values for each conductor type:
+
+* `D` [in],             Conductor diameter
+* `Al_m` [lb/1000ft],   Aluminum weight
+* `St_m` [lb/1000ft],   Steel weight
+* `R` [ohm/1000ft],     Resistance assuming AC current and 75 C temperature
+* `bundle` [-],         Number of conductors per phase
+
+**`labels`** [string], Label for each conductor type
 
 Credit to Mads Almassalkhi for compiling data.
 """
@@ -93,13 +95,15 @@ In: nothing
 
 Out:
 
-* ACSR table with the following values for each conductor type:
-    * `D` [m],             Conductor diameter
+**ACSR table** with the following values for each conductor type:
+
+    * `D` [m],         Conductor diameter
     * `Al_m` [kg/m],   Aluminum weight
     * `St_m` [kg/m],   Steel weight
     * `R` [ohm/m],     Resistance assuming AC current and 75 C temperature
-    * `bundle` [-],         Number of conductors per phase
-* `labels` [string], Label for each conductor type
+    * `bundle` [-],    Number of conductors per phase
+
+**`labels`** [string],   Label for each conductor type
 
 Credit to Mads Almassalkhi for compiling data.
 """
