@@ -18,9 +18,9 @@ Original code by Mads Almassalkhi.
 function estimate_length(S_base, V_base, R_pu, R_cond, bundle)
     R_base = V_base^2/S_base
     R_ohms = R_pu*R_base
-    push!(length, R_ohms/(R_pu/bundle))
+    line_length = R_ohms/(R_pu/bundle)
     # Ensure length estimate is positive
     default = 1e-4*1609.3
-    length <= 0 && (length = default)
-    return length
+    line_length <= 0 && (line_length = default)
+    return line_length
 end
