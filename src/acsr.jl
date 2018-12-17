@@ -1,4 +1,5 @@
-struct ACSRSpecs
+"ACSR data from spec table; english units."
+struct ACSRSpecsEnglish
     "Catchy name"
     label::String
     "Number of conductors per phase"
@@ -10,6 +11,22 @@ struct ACSRSpecs
     "Steel weight [lb/1000ft]"
     St_m::Float64
     "Resistance assuming AC current and 75 C temperature [ohm/1000ft]"
+    R::Float64
+end
+
+"ACSR data from spec table; SI units."
+struct ACSRSpecsMetric
+    "Catchy name"
+    label::String
+    "Number of conductors per phase"
+    bundle::Int64
+    "Conductor diameter [m]"
+    D::Float64
+    "Aluminum weight [kg/m]"
+    Al_m::Float64
+    "Steel weight [kg/m]"
+    St_m::Float64
+    "Resistance assuming AC current and 75 C temperature [ohm/m]"
     R::Float64
 end
 
@@ -151,6 +168,7 @@ In:
 
 * `I_lim` [A],          Line current limit
 * `V_base` [V],         Line base voltage
+* `metric` (Bool),      Whether to use metric (SI) or English units
 
 Out:
 
@@ -166,8 +184,8 @@ Credit to Mads Almassalkhi for original MATLAB implementation. See:
 *  Bergen and Vittal "Power Systems Analysis" 2nd ed 2000 p.85
 *  Weedy and Cory "Electric Power Systems" 4th ed 1998 p.129
 """
-function acsr_interpolation(I_lim::Float64, V_base::Float64)
-    acsr, labels = acsr_table_si()
+function acsr_interpolation(I_lim::Float64, V_base::Float64; metric::Bool=true)
+    acsr, labels = metric ? acsr_table_si() : acsr_table_english()
 
     maxcurrent = maximum(acsr[:, 5])
     largebundle = 1000
@@ -215,5 +233,6 @@ function acsr_interpolation(I_lim::Float64, V_base::Float64)
         D, Al_m, St_m, R = acsr[row, :]
         label = labels[row]
     end
-    return ACSRSpecs(label, bundle, D, Al_m, St_m, R)
+    return metric ? ACSRSpecsMetric(label, bundle, D, Al_m, St_m, R) :
+                    ACSRSpecsEnglish(label, bundle, D, Al_m, St_m, R)
 end

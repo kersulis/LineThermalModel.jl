@@ -73,7 +73,14 @@ end
 
 @testset "ACSR interpolation" begin
     acsr = acsr_interpolation(400.0, 138e3)
+    @test acsr isa ACSRSpecsMetric
     @test acsr.label == "Penguin"
+    @test acsr.R ≈ 1.9520997e-4 atol=atol
+
+    acsr = acsr_interpolation(400.0, 138e3; metric=false)
+    @test acsr isa ACSRSpecsEnglish
+    @test acsr.label == "Penguin"
+    @test acsr.R ≈ 0.119 atol=atol
 
     acsr = acsr_interpolation(1200.0, 138e3)
     @test acsr.label == "Lark"
