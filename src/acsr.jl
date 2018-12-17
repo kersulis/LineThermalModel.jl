@@ -21,10 +21,10 @@ In:
 
 Out: `mCp` [J/m-C], Conductor heat capacity
 """
-function eq_mCp(Al_m, St_m)
+function eq_mCp(Al_m::Float64, St_m::Float64)
     Al_Cp = 955.0 # Aluminum heat capacity
     St_Cp = 476.0 # Steel heat capacity
-    Al_m*Al_Cp + St_m*St_Cp
+    Al_m * Al_Cp + St_m * St_Cp
 end
 
 """
@@ -93,7 +93,8 @@ function acsr_table_english()
     1.735 2051 249 0.0106 1607 #'Kiwi'     ,  '72/7'
     1.762 2040 468 0.0105 1623 #'Bluebird' , '84/19'
         ]
-    labels = [ "Turkey"; "Swan"; "Sparrow"; "Robin"; "Raven"; 
+    labels = [
+        "Turkey"; "Swan"; "Sparrow"; "Robin"; "Raven";
         "Quail"; "Pigeon"; "Penguin"; "Waxwing"; "Partridge";
         "Ostrich"; "Merlin"; "Linnet"; "Oriole"; "Chickadee";
         "Brant"; "Ibis"; "Lark"; "Pelican"; "Flicker"; "Hen";
@@ -101,7 +102,8 @@ function acsr_table_english()
         "Rook"; "Scoter"; "Gannet"; "Starling"; "Redwing";
         "Coot"; "Drake"; "Mallard"; "Canary"; "Cardinal";
         "Curlew"; "Finch"; "Bunting"; "Bittern"; "Dipper";
-        "Bobolink"; "Lapwing"; "Chukar"; "Kiwi"; "Bluebird"]
+        "Bobolink"; "Lapwing"; "Chukar"; "Kiwi"; "Bluebird"
+    ]
     return acsr, labels
 end
 
@@ -125,23 +127,25 @@ Credit to Mads Almassalkhi for compiling data.
 function acsr_table_si()
     acsr, labels = acsr_table_english()
     # Convert diameter: 1 in = 25.4e-3 m
-    acsr[:,1] = acsr[:,1]*25.4e-3
+    acsr[:, 1] = acsr[:, 1] * 25.4e-3
 
     # Convert weight: 1 lb = 0.453592 kg and 1000 ft = 304.8 m
-    acsr[:,2:3] = acsr[:,2:3]*0.453592/304.8
+    acsr[:, 2:3] = acsr[:, 2:3] * 0.453592 / 304.8
 
     # Convert resistance: 1000ft = 304.8 m
-    acsr[:,4] = acsr[:,4]/304.8
+    acsr[:, 4] = acsr[:, 4] / 304.8
     # Scale resistances to better match RTS96 system data.
     # These values are tuned so that estimateLineLength.m will
     # give a result very close to the lengths provided for the RTS96 system.
     resistanceFactor = 2.0
-    acsr[:,4] = acsr[:,4]/resistanceFactor
+    acsr[:, 4] = acsr[:, 4] / resistanceFactor
     return acsr, labels
 end
 
 """
-Guess bundling configuration based on I_lim and V_base.
+    acsr_specs = acsr_interpolation(I_lim, V_base)
+
+Estimate bundling configuration and ACSR data based on I_lim and V_base.
 
 In:
 
@@ -162,30 +166,41 @@ Credit to Mads Almassalkhi for original MATLAB implementation. See:
 *  Bergen and Vittal "Power Systems Analysis" 2nd ed 2000 p.85
 *  Weedy and Cory "Electric Power Systems" 4th ed 1998 p.129
 """
-function acsr_interpolation(I_lim, V_base)
+function acsr_interpolation(I_lim::Float64, V_base::Float64)
     acsr, labels = acsr_table_si()
-    maxcurrent = maximum(acsr[:,5])
+
+    maxcurrent = maximum(acsr[:, 5])
     largebundle = 1000
+
     if V_base <= 138e3
-        bundle = I_lim <= 1000 ? 1 : I_lim <= maxcurrent*2 ? 2 : largebundle
+        bundle = (I_lim <= 1000) ? 1 :
+            (I_lim <= maxcurrent * 2) ? 2 : largebundle
     elseif V_base <= 220e3
-        bundle = I_lim <= 1000 ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
+        bundle = (I_lim <= 1000) ? 1 :
+            (I_lim <= maxcurrent * 2) ? 2 :
+                (I_lim <= maxcurrent * 3) ? 3 : largebundle
     elseif V_base <= 345e3
-        bundle = I_lim <= maxcurrent ? 1 : I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*3 ? 3 : largebundle
+        bundle = (I_lim <= maxcurrent) ? 1 :
+            (I_lim <= maxcurrent * 2) ? 2 :
+                (I_lim <= maxcurrent * 3) ? 3 : largebundle
     elseif V_base <= 500e3
-        bundle = I_lim <= maxcurrent*2 ? 2 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
+        bundle = (I_lim <= maxcurrent * 2) ? 2 :
+            (I_lim <= maxcurrent * 4) ? 4 :
+                (I_lim <= maxcurrent * 6) ? 6 : largebundle
     else
-        bundle = I_lim <= maxcurrent*3 ? 3 : I_lim <= maxcurrent*4 ? 4 : I_lim <= maxcurrent*6 ? 6 : largebundle
+        bundle = (I_lim <= maxcurrent * 3) ? 3 :
+            (I_lim <= maxcurrent * 4) ? 4 :
+                (I_lim <= maxcurrent * 6) ? 6 : largebundle
     end
 
     # Search for ACSR match
     row = 1
     found = false
-    while !found && row <= size(acsr,1)
-        if I_lim <= acsr[row,5]*bundle
+    while !found && row <= size(acsr, 1)
+        if I_lim <= acsr[row, 5] * bundle
             found = true
             row -= 1
-            row < 1 && (row = 1)
+            row == 0 && (row = 1)
         else
             row += 1
         end
@@ -193,10 +208,12 @@ function acsr_interpolation(I_lim, V_base)
 
     # Assign output variables
     if !found
-        warn("No ACSR match for line with I_lim = $I_lim A and V_base = $V_base kV")
+        @warn "No ACSR match for line with I_lim = $I_lim A and V_base = $V_base kV"
         D, Al_m, St_m, R = NaN, NaN, NaN, NaN
+        label=""
     else
-        D, Al_m, St_m, R = acsr[row,:]
+        D, Al_m, St_m, R = acsr[row, :]
+        label = labels[row]
     end
     return ACSRSpecs(label, bundle, D, Al_m, St_m, R)
 end
