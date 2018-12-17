@@ -103,3 +103,26 @@ end
     @test acsr.bundle == 1000
     @test isnan(acsr.D)
 end
+
+@testset "Line lengths" begin
+    I_lim = 400.0
+    V_base = 138e3
+    acsr = acsr_interpolation(I_lim, V_base)
+
+    S_base = 100e6
+    R_pu = 0.001
+    l = estimate_length(S_base, V_base, R_pu, acsr.R, acsr.bundle)
+
+    l_test = 975.5649076
+
+    @test l ≈ l_test atol=atol
+
+    l = estimate_length(S_base, V_base, R_pu * 10, acsr.R, acsr.bundle)
+    @test l ≈ l_test * 10 atol=atol
+
+    l = estimate_length(S_base, V_base, R_pu, acsr.R, acsr.bundle * 2)
+    @test l ≈ l_test * 2 atol=atol
+
+    l = estimate_length(S_base, V_base / 10, R_pu, acsr.R, acsr.bundle * 2)
+    @test l ≈ 19.511298 atol=atol
+end
