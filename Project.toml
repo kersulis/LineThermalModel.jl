@@ -1,13 +1,14 @@
 name = "LineThermalModel"
+uuid = "e258a45a-0233-11e9-1d97-41b4182cabc6"
 authors = ["kersulis <kersulis@umich.edu>"]
 version = "0.1.0"
-uuid = "e258a45a-0233-11e9-1d97-41b4182cabc6"
 
 [deps]
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 
 [extras]
+PowerModels = "c36e90e8-916a-50a6-bd94-075b64ef4655"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "PowerModels"]
