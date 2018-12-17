@@ -1,3 +1,9 @@
+"""
+This module implements two related pieces of functionality:
+
+* Interpolating ACSR conductor type and looking up appropriate data using current limit and base voltage information, and
+* Implementing equations in IEEE Standard 738-2012 to compute transmission line thermal parameters.
+"""
 module LineThermalModel
 export
     # ieee 738 functions
@@ -15,10 +21,3 @@ include("acsr.jl")
 include("length.jl")
 
 end # module
-
-@doc """
-This module implements two related pieces of functionality:
-
-* Interpolating ACSR conductor type and looking up appropriate data using current limit and base voltage information, and
-* Implementing equations in IEEE Standard 738-2012 to compute transmission line thermal parameters.
-""" -> LineThermalModel
