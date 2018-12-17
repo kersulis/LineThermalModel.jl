@@ -1,3 +1,18 @@
+struct ACSRSpecs
+    "Catchy name"
+    label::String
+    "Number of conductors per phase"
+    bundle::Int64
+    "Conductor diameter [in]"
+    D::Float64
+    "Aluminum weight [lb/1000ft]"
+    Al_m::Float64
+    "Steel weight [lb/1000ft]"
+    St_m::Float64
+    "Resistance assuming AC current and 75 C temperature [ohm/1000ft]"
+    R::Float64
+end
+
 """
 In:
 
@@ -183,5 +198,5 @@ function acsr_interpolation(I_lim, V_base)
     else
         D, Al_m, St_m, R = acsr[row,:]
     end
-    return D,Al_m,St_m,R,bundle
+    return ACSRSpecs(label, bundle, D, Al_m, St_m, R)
 end
