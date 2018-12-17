@@ -10,6 +10,7 @@ export
     eq_mCp, acsr_table_english, acsr_table_si, acsr_interpolation, estimate_length, ACSRSpecsEnglish, ACSRSpecsMetric
 
 include("ieee738.jl")
+include("powermodels.jl")
 include("acsr.jl")
 include("length.jl")
 

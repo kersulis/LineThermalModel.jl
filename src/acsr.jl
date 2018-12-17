@@ -236,3 +236,37 @@ function acsr_interpolation(I_lim::Float64, V_base::Float64; metric::Bool=true)
     return metric ? ACSRSpecsMetric(label, bundle, D, Al_m, St_m, R) :
                     ACSRSpecsEnglish(label, bundle, D, Al_m, St_m, R)
 end
+
+"""
+Estimate ACSR specs for all branches, given a `network_data` dict. The input
+dict is the output of `PowerModels.parse_file`.
+"""
+function acsr_interpolation(network_data::Dict{String, Any}; metric::Bool=true)
+    !network_data["per_unit"] && @error "Network data is not in per unit!"
+
+
+    # even with network_data["per_unit"] == true, basekv values are still in kv
+    basekv = branch_basekv(network_data)
+
+    baseMVA = network_data["baseMVA"]
+    branch_data = Vector{Tuple}()
+    for (k, v) in network_data["branch"]
+        # note: if network_data["per_unit"] == true, then rate_a has been
+        # divided by baseMVA.
+        push!(branch_data, (k, v["rate_a"] * baseMVA))
+    end
+
+    T = metric ? ACSRSpecsMetric : ACSRSpecsEnglish
+    acsr_specs = Dict{String, T}()
+
+    for i in 1:length(branch_data)
+        id, rate_a = branch_data[i]
+        V_base = basekv[string(id)] * 1e3 # convert kV to V
+
+        # convert long-term VA rating to current rating
+        I_lim = rate_a * 1e6 / V_base
+
+        acsr_specs[id] = acsr_interpolation(I_lim, V_base; metric=metric)
+    end
+    return acsr_specs
+end
