@@ -60,7 +60,7 @@ In: `phi` [deg], Angle between wind and conductor axis
 Out: K_angle [-], Wind direction factor
 """
 function eq4a_K_angle(phi::Float64)
-    1.194 - cos(phi) + 0.194 * cos(2 * phi) + 0.368 * sin(2 * phi)
+    1.194 - cosd(phi) + 0.194 * cosd(2 * phi) + 0.368 * sind(2 * phi)
 end
 
 """
@@ -263,4 +263,20 @@ In:
 
 Out: `eta_r` [W/m-C^4], Radiative heat loss rate coefficient
 """
-eq_eta_r(D::Float64, emm::Float64) = 17.8 * D * emm
+eq_eta_r(D::Float64, emm::Float64) = 17.8 * D * emm / 1e8
+
+"""
+In:
+
+* `Al_m` [kg/m],        Aluminum mass
+* `St_m` [kg/m],        Steel mass
+
+Out: `mCp` [J/m-C], Conductor heat capacity
+"""
+function eq_mCp(Al_m::Float64, St_m::Float64)
+    Al_Cp = 955.0 # Aluminum heat capacity
+    St_Cp = 476.0 # Steel heat capacity
+    Al_m * Al_Cp + St_m * St_Cp
+end
+
+eq_mCp(acsr_spec::ACSRSpecsMetric) = eq_mCp(acsr_spec.Al_m, acsr_spec.St_m)
