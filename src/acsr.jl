@@ -31,20 +31,6 @@ struct ACSRSpecsMetric
 end
 
 """
-In:
-
-* `Al_m` [kg/m],        Aluminum mass
-* `St_m` [kg/m],        Steel mass
-
-Out: `mCp` [J/m-C], Conductor heat capacity
-"""
-function eq_mCp(Al_m::Float64, St_m::Float64)
-    Al_Cp = 955.0 # Aluminum heat capacity
-    St_Cp = 476.0 # Steel heat capacity
-    Al_m * Al_Cp + St_m * St_Cp
-end
-
-"""
 In: nothing
 
 Out:
@@ -269,4 +255,36 @@ function acsr_interpolation(network_data::Dict{String, Any}; metric::Bool=true)
         acsr_specs[id] = acsr_interpolation(I_lim, V_base; metric=metric)
     end
     return acsr_specs
+end
+
+"""
+Return current limits for all branches, given a `network_data`
+dict. The input is the output of `PowerModels.parse_file`.
+"""
+function return_current_limits(network_data::Dict{String, Any})
+    !network_data["per_unit"] && @error "Network data is not in per unit!"
+
+    # even with network_data["per_unit"] == true, basekv values are still in kv
+    basekv = branch_basekv(network_data)
+    baseMVA = network_data["baseMVA"]
+
+    branch_data = Vector{Tuple}()
+    for (k, v) in network_data["branch"]
+        # note: if network_data["per_unit"] == true, then rate_a has been
+        # divided by baseMVA.
+        push!(branch_data, (k, v["rate_a"] * baseMVA))
+    end
+
+    current_limits = Dict{String, Float64}()
+
+    for i in 1:length(branch_data)
+        id, rate_a = branch_data[i]
+        V_base = basekv[string(id)] * 1e3 # convert kV to V
+
+        # convert long-term VA rating to current rating
+        I_lim = rate_a * 1e6 / V_base
+
+        current_limits[id] = I_lim
+    end
+    return current_limits
 end

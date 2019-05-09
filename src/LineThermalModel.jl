@@ -13,11 +13,12 @@ export
     eq18_Q_s, eq19_Q_se, eq20_K_solar, eq_eta_c, eq_eta_r,
 
     # acsr lookup/interpolation functions
-    eq_mCp, acsr_table_english, acsr_table_si, acsr_interpolation, estimate_length, ACSRSpecsEnglish, ACSRSpecsMetric
+    eq_mCp, acsr_table_english, acsr_table_si, acsr_interpolation, return_current_limits,
+    estimate_length, ACSRSpecsEnglish, ACSRSpecsMetric
 
+include("acsr.jl")
 include("ieee738.jl")
 include("powermodels.jl")
-include("acsr.jl")
 include("length.jl")
 
 end # module
